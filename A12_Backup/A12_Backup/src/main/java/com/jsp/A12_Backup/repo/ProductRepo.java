@@ -1,0 +1,17 @@
+package com.jsp.A12_Backup.repo;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.jsp.A12_Backup.entity.Product;
+
+public interface ProductRepo extends JpaRepository<Product, Integer>{
+
+	@Query("select p from Product p where p.name=:name")
+	Product findByname(@Param("name") String name);
+	
+	List<Product> findBypriceGreaterThan(double price);
+}

@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: practice
+  datasource:
+    url: jdbc:mysql://localhost:3306/practice
+    username: root
+    password: densil@raja
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  properties:
+    hibernate:
+      format_sql: true
