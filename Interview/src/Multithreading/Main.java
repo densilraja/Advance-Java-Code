@@ -72,6 +72,37 @@ public class Main {
 
         odd.start();
         even.start();
+        System.out.println("------------------------------------");
+        System.out.println();
+        System.out.println();
+
+        ProducerConsumer pc = new ProducerConsumer();
+        
+        Thread produce = new Thread(() -> {
+            for (int i = 1; i <= 10; i++) {
+                try {
+                    pc.produce(i);
+                    Thread.sleep(100);
+                } catch (InterruptedException ex) {
+                    System.getLogger(Main.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+            }
+        });
+
+        Thread consume = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                try {
+                    pc.consume();
+                    Thread.sleep(300);
+                } catch (InterruptedException ex) {
+                    System.getLogger(Main.class.getName()).log(System.Logger.Level.ERROR, (String) null, ex);
+                }
+            }
+        });
+
+        produce.start();
+        consume.start();
+
 
     }
 
@@ -79,12 +110,10 @@ public class Main {
         ExecutorService service = Executors.newFixedThreadPool(3);
         System.out.println("Executing tasks using ExecutorService");
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 3; i++) {
             service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
             service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
             service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
-            service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
-
         }
         service.shutdown();
         
