@@ -1,5 +1,8 @@
 package Multithreading;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class Main {
 
     private int a = 0;   // shared resource
@@ -10,7 +13,9 @@ public class Main {
         }
     }
 
-    public static void main(String[] args) {
+    
+
+    public static void main(String[] args) throws InterruptedException {
         Main m = new Main();
 
         Thread t = new Thread(() -> {
@@ -18,11 +23,11 @@ public class Main {
             for (int i = 1; i <= 10; i++) {
                 System.out.println("first");
                 m.shared();   // accessing shared resource
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                // try {
+                //     Thread.sleep(500);
+                // } catch (InterruptedException e) {
+                //     e.printStackTrace();
+                // }
             }
         });
 
@@ -31,16 +36,58 @@ public class Main {
             for (int i = 1; i <= 10; i++) {
                 System.out.println("second");
                 m.shared();   // also accessing shared resource
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                //     try {
+                //         Thread.sleep(500);
+                //     } catch (InterruptedException e) {
+                //         e.printStackTrace();
+                //     }
             }
         });
 
         t.start();
+        t.join();
 
         t1.start();
+        t1.join();
+        System.out.println("Main Thread Finished");
+        System.out.println("--------------------------");
+        execute();
+
+        EvenOdd eo = new EvenOdd();
+
+        Thread odd = new Thread(() -> {
+            try {
+                eo.printOdd();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        Thread even = new Thread(() -> {
+            try {
+                eo.printEven();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        odd.start();
+        even.start();
+
+    }
+
+    public static void execute() throws InterruptedException {
+        ExecutorService service = Executors.newFixedThreadPool(3);
+        System.out.println("Executing tasks using ExecutorService");
+
+        for (int i = 0; i < 10; i++) {
+            service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+            service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+            service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+            service.execute(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+
+        }
+        service.shutdown();
+        
+        System.out.println("ExecutorService Finished");
     }
 }
